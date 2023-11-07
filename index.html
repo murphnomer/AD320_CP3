@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<!--
+  Name: Mike Murphy
+  Date: 2023-10-23
+  Class: AD 320
+  Instructor: Tim Mandzyuk
+
+  This is the index.html page for my CP2 website which is a game that also analyzes
+  your linguistic fluency in various languages based on the Stroop method.
+-->
+<head>
+    <title>Stroop Me!!</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="styles.css">
+    <script src="index.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300&family=Source+Sans+3:wght@600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <h1>Stroop Test - Linguistic Fluency Analyzer</h1>
+    </header>
+    <main>
+        <article>
+            <section id="main">
+                <select id="source_lang">
+                    <option value="1" selected>English</option>
+                    <option value="0">None</option>
+                    <option value="2">Español</option>
+                    <option value="3">Deutsch</option>
+                    <option value="4">Русский</option>
+                    <option value="5">中文</option>
+                </select>
+                <h2 class="h_label"> vs. </h2>
+                <select id="response_lang">
+                    <option value="1" selected>English</option>
+                    <option value="2">Español</option>
+                    <option value="3">Deutsch</option>
+                    <option value="4">Русский</option>
+                    <option value="5">中文</option>
+                </select>
+                <div id="board">
+                    <h3 id="instructions">Choose your languages above, then click Start!</h3>
+                    <h3 id="help" class="invisible">Click the color of the font, not what the word says!</h3>
+                </div>
+                <footer>
+                    <button id="start">Start</button>
+                    <div class="scoring_element"><p>Time: <p><p id="timer">0:00</p></div>
+                    <div class="scoring_element"><p># Correct: <p><p id="num_correct">0</p></div>
+                    <div class="scoring_element"><p># Mismatch: <p><p id="num_mismatch">0</p></div>
+                    <div class="scoring_element"><p># Wrong: <p><p id="num_wrong">0</p></div>
+                    <div class="scoring_element"><p>Avg Response Time: <p><p id="response_time">0</p></div>
+                </footer>
+            </section>
+        </article>
+        <aside id="responses">
+            <button class="response_btn">color1</button>
+            <button class="response_btn">color2</button>
+            <button class="response_btn">color3</button>
+            <button class="response_btn">color4</button>
+            <button class="response_btn">color5</button>
+            <button class="response_btn">color6</button>
+            <button class="response_btn">color7</button>
+        </aside>
+    </main>
+    <footer>
+        <article>
+            <p>More information on the Stroop effect, on which this project is based: <a href="https://en.wikipedia.org/wiki/Stroop_effect">Stroop Effect</a></p>
+            <p>You can use the None language mode on the left to "baseline" your performance with colored boxes instead of words.  Compare your response time and
+                mismatch numbers to this baseline to get a rough idea of how well you understand the text in the gameboard area.  The better you understand the 
+                colored words at a glance, the higher your mismatch and response time numbers should be as the interference effect becomes more pronounced.</p>
+            <p>If you have a very high Wrong number, it's likely that you don't understand the language on the response buttons very well.</p>
+            <p>Play around with it and see if you can gain some more insights!</p>
+        </article>
+    </footer>
+</body>

@@ -1,0 +1,151 @@
+/*
+    Name: Mike Murphy
+    Date: 10/24/2023
+    
+    CSS file for Stroop Me game.
+*/
+
+body {
+    font-family: 'Source Sans 3', sans-serif;
+}
+
+.h_lang {
+    font-weight: 300;
+}
+
+main {
+    display: flex;
+    flex-direction: row;
+}
+
+#responses {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    margin-left: 10px;
+    margin-bottom: 85px;
+    margin-top: 30px;
+}
+
+.response_btn {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 24px;
+    background-color: cornflowerblue;
+    border: 3pt solid black;
+    width: 180px;
+    text-align: justify;
+}
+
+#main {
+    background-color: cornflowerblue;
+    border: 3pt solid black;
+    border-radius: 0.2em;
+    width: 900px;
+    text-align: center;
+    padding: 5px;
+}
+
+#main select {
+    background-color: cornflowerblue;
+    font-size: 24px;
+    font-family: 'Source Sans 3', sans-serif;
+}
+
+main h2 {
+    display: inline;
+    font-weight: 200;
+}
+
+#board {
+    border: 1pt solid black;
+    height: 600px;
+    margin: 5px;
+}
+
+#main footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+}
+
+#main footer button {
+    justify-self: flex-start;
+}
+
+#timer {
+    display: inline;
+    justify-self: flex-end;
+}
+
+#board p {
+    position: absolute;
+    font-size: 48pt;
+}
+
+h3#instructions {
+    position: absolute;
+    font-size: 48pt;
+    top: 100px;
+    color: white;
+    width: 780px;
+    text-align: center;
+}
+
+h3#help {
+    position: absolute;
+    color: white;
+    top: 300px;
+    font-size: 24pt;    
+}
+
+.invisible {
+    display: none;
+}
+
+.scoring_element {
+    display: flex;
+    flex-direction: column;
+}
+
+.scoring_element p {
+    margin-top: 0;
+    margin-bottom: 0;
+
+}
+
+footer {
+    margin-top: 10px;
+}
+
+footer article p {
+    width: 900px;
+}
+
+.blue {
+    color: blue;
+}
+
+.red {
+    color: red;
+}
+
+.yellow {
+    color: yellow;
+}
+
+.black {
+    color: black;
+}
+
+.purple {
+    color: purple;
+}
+
+.green {
+    color: green;
+}
+
+.orange {
+    color: orange;
+}
