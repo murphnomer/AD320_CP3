@@ -27,8 +27,12 @@
     // Magic numbers and tracker variables
     const TIMER_START = 30;
 
-    const LANGUAGES = ["None","English","Spanish","German","Russian","Chinese"];
-    const COLOR_NAMES = ["blue","red","yellow","black","purple","green","orange"];
+    const BASE_URL_LANG_LIST='https://translation.googleapis.com/language/translate/v2/languages';
+    const API_KEY='key=AIzaSyAJpMtRCwKOZU3JvrMMf6qo398bz6BcWt4';
+
+    let languages = ['None']; //["None","English","Spanish","German","Russian","Chinese"];
+    let lang_codes = ['--'];
+    const COLOR_NAMES = ["BLUE","RED","YELLOW","BLACK","PURPLE","GREEN","ORANGE"];
 
     const COLOR_WORDS = [["███","███","███","███","███","███","███"],
                          ["BLUE","RED","YELLOW","BLACK","PURPLE","GREEN","ORANGE"],
@@ -72,8 +76,37 @@
     for (let i = 0; i < buttons.length; i++) {
         buttons[i].addEventListener("click",processResponse);
     }
+
+    fetch(BASE_URL_LANG_LIST+'?'+API_KEY+"&target=en")
+      .then(statusCheck)
+      .then(resp => resp.json())
+      .then(processLangs)
+      .catch(console.error)
+    
   }
 
+  function processLangs(response) {
+    let lang_list = response.data.languages;
+    let s_list_item;
+    let r_list_item;
+
+    for (let i = 0; i < lang_list.length; i++) {
+      languages[i+1] = lang_list[i].name;
+      lang_codes[i+1] = lang_list[i].language;
+      s_list_item = gen('option');
+      s_list_item.textContent=lang_list[i].name;
+      s_list_item.value=lang_list[i].value;
+      r_list_item = gen('option');
+      r_list_item.textContent=lang_list[i].name;
+      r_list_item.value=lang_list[i].value;
+      if(lang_list[i].name=="English") {
+        s_list_item.selected=true;
+        r_list_item.selected=true;
+      }
+      id('source_lang').appendChild(s_list_item);
+      id('response_lang').appendChild(r_list_item);
+    }
+  }
   /**
    * Event listener for the Start button.  Starts the timer, randomizes the
    * labels on the response buttons, and generates the first prompt.
@@ -354,5 +387,17 @@
     return document.createElement(tagName);
   }
 
-
+ /**
+   * Helper function to return the response's result text if successful, otherwise
+   * returns the rejected Promise result with an error status and corresponding text
+   * @param {object} res - response to check for success/error
+   * @return {object} - valid response if response was successful, otherwise rejected
+   *                    Promise result
+   */
+  async function statusCheck(res) {
+    if (!res.ok) {
+      throw new Error(await res.text());
+    }
+    return res;
+  }
 })();
