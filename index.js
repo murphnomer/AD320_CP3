@@ -28,7 +28,7 @@
     const TIMER_START = 30;
 
     const BASE_URL_LANG_LIST='https://translation.googleapis.com/language/translate/v2/languages';
-    const API_KEY='key=AIzaSyAJpMtRCwKOZU3JvrMMf6qo398bz6BcWt4';
+    const API_KEY='key=';
 
     let languages = ['None']; //["None","English","Spanish","German","Russian","Chinese"];
     let lang_codes = ['--'];
