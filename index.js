@@ -1,15 +1,20 @@
 /**
  * Name: Mike Murphy
- * Date: 10/24/2023
+ * Date: 2023-11-07
  * Class: AD 320
  * Instructor: Tim Mandzyuk
  * 
- * This is the Javascript file for my CP2 project.  The project is a game which uses
- * the Stroop language interference effect to attempt to give the user an indication
- * of how fluent they are at reading a particular language (at least color words in
- * that language) by measuring the delay in reaction time and increase in errors when
- * attempting to name the color of the font that a color word is written in rather 
- * than the color named by the semantic meaning of the displayed word.  
+ * This is the Javascript file for my CP3 project.  
+ * 
+ * The project is a modification of my CP2 project (see description of the original 
+ * project below) to add functionality to obtain a list of languages and translations
+ * of color words in those languages from the Google Translation API.
+ * 
+ * The project is a game which uses the Stroop language interference effect to attempt
+ * to give the user an indication of how fluent they are at reading a particular language
+ * (at least color words in that language) by measuring the delay in reaction time and
+ * increase in errors when attempting to name the color of the font that a color word is
+ * written in rather than the color named by the semantic meaning of the displayed word.  
  * 
  * According to the Stroop interference theory, the better a given person understands
  * the semantic meaning of a given printed word, the more difficult it is to respond correctly
@@ -27,19 +32,25 @@
     // Magic numbers and tracker variables
     const TIMER_START = 30;
 
-    const BASE_URL_LANG_LIST='https://translation.googleapis.com/language/translate/v2/languages';
+    const BASE_URL_LANG_LIST='https://translation.googleapis.com/language/translate/v2/languages?';
+    const BASE_URL_TRANSLATE='https://translation.googleapis.com/language/translate/v2?';
     const API_KEY='key=';
 
     let languages = ['None']; //["None","English","Spanish","German","Russian","Chinese"];
     let lang_codes = ['--'];
     const COLOR_NAMES = ["BLUE","RED","YELLOW","BLACK","PURPLE","GREEN","ORANGE"];
 
+    /*
     const COLOR_WORDS = [["███","███","███","███","███","███","███"],
                          ["BLUE","RED","YELLOW","BLACK","PURPLE","GREEN","ORANGE"],
                          ["AZUL","ROJO","AMARILLO","NEGRO","MORADO","VERDE","ANARANJADO"],
                          ["BLAU","ROT","GELB","SCHWARZ","PURPUR","GRÜN","ORANGE"],
                          ["СИНИЙ","КРАСНЫЙ","ЖЁЛТЫЙ","ЧЕРНЫЙ","ФИОЛЕТОВЫЙ","ЗЕЛЁНЫЙ","ОРАНЖЕВЫЙ"],
                          ["蓝","红","黄","黑","紫","绿","橙"]];
+    */
+
+    let source_colors = [];
+    let response_colors = [];
 
     const ONE_SECOND = 1000;
     const SECONDS_IN_MINUTE = 60;
@@ -77,28 +88,38 @@
         buttons[i].addEventListener("click",processResponse);
     }
 
-    fetch(BASE_URL_LANG_LIST+'?'+API_KEY+"&target=en")
+    fetch(BASE_URL_LANG_LIST + API_KEY + "&target=en")
       .then(statusCheck)
       .then(resp => resp.json())
       .then(processLangs)
-      .catch(console.error)
+      .catch(displayError)
     
   }
 
+  /**
+   * Processes the response from the Google Translation API with the list of supported languages.
+   * 
+   * @param {JSON} response - the API response containing the list of supported languages
+   */
   function processLangs(response) {
     let lang_list = response.data.languages;
     let s_list_item;
     let r_list_item;
 
+    // go through the list
     for (let i = 0; i < lang_list.length; i++) {
       languages[i+1] = lang_list[i].name;
       lang_codes[i+1] = lang_list[i].language;
+
+      // add an option for each item to both select controls
       s_list_item = gen('option');
       s_list_item.textContent=lang_list[i].name;
-      s_list_item.value=lang_list[i].value;
+      s_list_item.value=lang_list[i].language;
       r_list_item = gen('option');
       r_list_item.textContent=lang_list[i].name;
-      r_list_item.value=lang_list[i].value;
+      r_list_item.value=lang_list[i].language;
+
+      // set English to be the default
       if(lang_list[i].name=="English") {
         s_list_item.selected=true;
         r_list_item.selected=true;
@@ -107,11 +128,52 @@
       id('response_lang').appendChild(r_list_item);
     }
   }
+
   /**
-   * Event listener for the Start button.  Starts the timer, randomizes the
-   * labels on the response buttons, and generates the first prompt.
+   * Event listener for the Start button.  Gets translations for the 
+   * color word prompts from the Google Translation API, starts the timer, 
+   * randomizes the labels on the response buttons, and generates the first prompt.
    */
-  function start() {
+  async function start() {
+
+    let errors = qsa('h3.error');
+    for (let i = 0; i < errors.length; i++) {
+      errors[i].remove();
+    }
+
+    // Get the language values selected by the user for this run
+    source_lang = id("source_lang").value;
+    response_lang = id("response_lang").value;
+
+    // temporary variable to hold the JSON response 
+    let response;
+
+    // independently translate each word in the COLOR_NAMES array into the source language
+    for (let i = 0; i < COLOR_NAMES.length; i++) {
+      response = await fetch(BASE_URL_TRANSLATE + API_KEY + '&q=' + COLOR_NAMES[i] + '&target=' + source_lang)
+                        .then(statusCheck)
+                        .then(resp => resp.json())
+                        .catch(displayError)
+      source_colors[i] = response.data.translations[0].translatedText;
+
+    }
+
+    // No need to translate the list again if source and response languages are the same
+    if (response_lang != source_lang) {
+      // independently translate each word in the COLOR_NAMES array into the response language
+      for (let i = 0; i < COLOR_NAMES.length; i++) {
+        response = await fetch(BASE_URL_TRANSLATE + API_KEY + '&q=' + COLOR_NAMES[i] + '&target=' + response_lang)
+                          .then(statusCheck)
+                          .then(resp => resp.json())
+                          .catch(displayError)
+        response_colors[i] = response.data.translations[0].translatedText;
+
+      }
+    } else {
+      response_colors = source_colors;
+    }
+
+
     // Run the tick function every second
     timer = setInterval(tick, ONE_SECOND);
 
@@ -123,9 +185,6 @@
     numMismatch = 0;
 
 
-    // Get the language values selected by the user for this run
-    source_lang = id("source_lang").value;
-    response_lang = id("response_lang").value;
 
     // Note the current time so we can calculate user's performance
     clickTime = Date.now();
@@ -147,6 +206,13 @@
 
     // Reset the scoreboard
     updateScoreDisplay();
+  }
+
+  function displayError(error) {
+    let message = gen('h3');
+    message.textContent = error;
+    message.classList.add('error');
+    id('board').appendChild(message);
   }
 
   /**
@@ -172,7 +238,7 @@
 
     // Get the appropriate color word for the selected language
     // and set it as the new item's text
-    item.textContent = COLOR_WORDS[source_lang][word];
+    item.textContent = source_colors[word];
 
     // Add a class to the new item that tells it which color to 
     // make the font
@@ -210,13 +276,14 @@
     // Apply the color words from the appropriate response language as
     // labels on the buttons, and enable the buttons
     for (let i = 0; i < buttons.length; i++) {
-        buttons[i].textContent = COLOR_WORDS[response_lang][rndOrder[i]];
+        buttons[i].textContent = response_colors[rndOrder[i]];
 
         // Use the id property of the item to store which color is being 
         // referenced
         buttons[i].id = rndOrder[i];
         buttons[i].disabled = false;
     }
+
   }
 
   /**

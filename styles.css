@@ -1,6 +1,6 @@
 /*
     Name: Mike Murphy
-    Date: 10/24/2023
+    Date: 2023-11-07
     
     CSS file for Stroop Me game.
 */
@@ -99,6 +99,13 @@ h3#help {
     font-size: 24pt;    
 }
 
+h3.error {
+    position: absolute;
+    color: red;
+    top: 500px;
+    font-size: 24pt;    
+}
+
 .invisible {
     display: none;
 }
@@ -122,30 +129,30 @@ footer article p {
     width: 900px;
 }
 
-.blue {
+.BLUE {
     color: blue;
 }
 
-.red {
+.RED {
     color: red;
 }
 
-.yellow {
+.YELLOW {
     color: yellow;
 }
 
-.black {
+.BLACK {
     color: black;
 }
 
-.purple {
+.PURPLE {
     color: purple;
 }
 
-.green {
+.GREEN {
     color: green;
 }
 
-.orange {
+.ORANGE {
     color: orange;
 }
